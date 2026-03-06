@@ -3,10 +3,9 @@
 # Contains all the main science sensors and modules for CAN communication
 # 2026/26 edition  
 
-from enum import ENUM
+from enum import Enum
 import can
 from CAN_utilities import *
-from science_can import *
 
 # Types of modules
 SCI_MODULE_NONE = 0 # No type
@@ -77,9 +76,13 @@ def assemble_SCP_from_frame(can_frame: can.Message, rsx_sci_pkt: ScienceCanPacke
         rsx_sci_pkt.data[i] = can_frame.data[i]
     return 1
 
-def assemble_frame_from_SCP(rsx_sci_pkt: ScienceCanPacket, can_frame: can.Message):
+def assemble_frame_from_SCP(rsx_sci_pkt: ScienceCanPacket):
+
+    can_frame = can.Message()
     # Initialize can_id for new frame to send
     can_id = 0
+
+    print(rsx_sci_pkt.priority)
 
     # Populate can_id with info from RSX_Sci packet
     can_id |= rsx_sci_pkt.priority & 0x1
@@ -100,7 +103,7 @@ def assemble_frame_from_SCP(rsx_sci_pkt: ScienceCanPacket, can_frame: can.Messag
 
     can_frame.is_extended_id = True
 
-    return 1
+    return can_frame
     
 def process_can_rx():
     return "bruh"
