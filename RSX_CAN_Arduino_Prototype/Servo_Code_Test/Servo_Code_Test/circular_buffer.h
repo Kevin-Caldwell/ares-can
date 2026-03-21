@@ -8,7 +8,8 @@ template<class T, uint32_t N = 32>
 class CircularBuffer {
 public:
   CircularBuffer()
-  : head_(0x0)
+  : head_(0x0),
+  : tail_(0x0)
   {
     static_assert((N & (N-1)) == 0);
   }
@@ -17,28 +18,40 @@ public:
   {
   }
 
-  void push(const T& val)
+  inline void push(const T& val)
   {
     buffer_[WRAP(head_++)] = val;
   }
 
-  T& pop()
+  inline T& pop()
   {
-    return buffer_[WRAP(head_--)];
+    return buffer_[WRAP(tail++)];
   }
 
-  T& operator[](int index)
+  inline T& operator[](const int index)
   {
-    return buffer_[WRAP(head_ - index)];
+    return buffer_[WRAP(tail + index)];
   }
 
-  T& operator[](int index) const
+  inline T& operator[](const int index) const
   {
-    return buffer_[WRAP(head_ - index)];
+    return buffer_[WRAP(tail + index)];
+  }
+
+  inline int elements() const
+  {
+    return tail_ - head_ + 1;
+  }
+
+  inline bool empty() const
+  {
+    
   }
 
 private:
   constexpr uint32_t kMask = N - 1;
   uint32_t head_;
+  uint32_t tail_;
   T buffer_[N];
 };
+

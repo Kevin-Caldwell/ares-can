@@ -99,7 +99,7 @@ bool process_rx() {
       Serial.print(", ");
     }
     Serial.println();
-    val = 0;
+    val = intermediate_can_msg.data[0];
 
     parse_can_message(intermediate_can_msg, &buf);
     if (buf.receiver_ == CAN_MODULE) {
@@ -112,7 +112,7 @@ bool process_rx() {
 bool process_tx() {
   Serial.println("SENDING");
 
-  const struct can_frame frame = {.can_id = 0x80000000 | 0x02052C80, .can_dlc = 0x8, {val, val, val, val, val, val, val}};
+  const struct can_frame frame = {.can_id = 0x80000000 | 0x00000500, .can_dlc = 0x8, {val, val, val, val, val, val, val}};
   val++;
   // frame.can_id = ;
   // frame.can_dlc = 8;
