@@ -1,16 +1,14 @@
 # Enables RPi to send a series of sanity pulses
 # Able to be recieved by arduino
-
-import can
-from science_can import *
-from CAN_utilities import initialize_bus
+from rsx_python.science_can import *
+from rsx_python.CAN_utilities import initialize_bus
 # from CAN_utilities import generate_can_id, initialize_bus, CMD_API_NONRIO_HB
 
 # Instantiate CAN bus
 BUS = initialize_bus()
 
 # Set our current device to be the RPi
-CURRENT_CAN_MODULE = Module.SCI_RPI
+CURRENT_CAN_MODULE = SCI_MODULE_RPI
 
 # Constant looping 
 while True:
@@ -44,7 +42,7 @@ while True:
     
       # Change the address to be sending from the RPi 
       scp.sender = CURRENT_CAN_MODULE
-      scp.receiver = Module.SCI_DRILL
+      scp.receiver = SCI_MODULE_DRILL
 
       # Print the received message 
       print("SENDING THE FOLLOWING CAN MESSAGE:")

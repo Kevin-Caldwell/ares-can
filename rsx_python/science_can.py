@@ -3,7 +3,6 @@
 # Contains all the main science sensors and modules for CAN communication
 # 2026/26 edition  
 
-from enum import Enum
 import can
 from CAN_utilities import *
 
