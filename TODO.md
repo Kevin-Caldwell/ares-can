@@ -3,3 +3,7 @@
 - [ ] Test Circular Buffer
 - [ ] Finalize final tasks
 - [ ] Make CAN jokes at Abhay
+- [ ] Move a servo
+- [ ] Read a sensor value
+- [ ] Move data spread over 3 CAN Packets
+- [ ] Bitbang 10 bit ADC signal from Mulispectral camera
