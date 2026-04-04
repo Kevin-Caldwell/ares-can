@@ -122,7 +122,7 @@ def assemble_frame_from_SCP(rsx_sci_pkt: ScienceCanPacket):
 
     return can_frame
 
-# Reads from ROS topic data, fills an SCP with information to be sent 
+# Reads from ROS topic data, fills and returns an SCP with information to be sent 
 def process_ROS_topic(ros_topic):
     
     # Initialize an instance of an empty SCP 
@@ -147,6 +147,23 @@ def process_ROS_topic(ros_topic):
     rsx_scp.extra = ros_topic.extra
     rsx_scp.dlc = ros_topic.data_length
     rsx_scp.data = ros_topic.data_content
+
+    return rsx_scp
+
+# Sanity function that returns a sample SCP from a string format ROS topic
+def ROS_STR_to_CAN_sanity(ros_str):
+    # Initialize an instance of an empty SCP 
+    rsx_scp = ScienceCanPacket()
+
+    # Fill SCP with sample info from ros_topic
+    rsx_scp.priority = 0
+    rsx_scp.science = SCIENCE_CAN_TAG
+    rsx_scp.sender = SCI_MODULE_RPI  # Sender will always be RPi, it sends every ros_msg to CAN network 
+    rsx_scp.receiver = SCI_MODULE_DRILL
+    rsx_scp.sensor = SCI_SENSOR_SERVO
+    rsx_scp.extra = 0b000100010001
+    rsx_scp.dlc = len(ros_str)
+    rsx_scp.data = ros_str
 
     return rsx_scp
     
