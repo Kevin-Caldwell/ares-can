@@ -5,8 +5,6 @@
 
 Servo rightAngleServo;
 
-int vel = 90;
-
 // PINOUT to Arduino Uno
 // SCK to Pin 13
 // SI to Pin 11
