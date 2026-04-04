@@ -4,6 +4,10 @@
 # 2026/26 edition  
 
 import can
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
 from CAN_utilities import *
 
 # Types of modules
@@ -28,6 +32,9 @@ SCI_SENSOR_SPARK_MOTOR = 7
 SCI_ERROR_SUCCESS = 0 # No Error 
 SCI_ERROR_GENERIC = 1 # General Error Msg 
 SCI_ERROR_PP = 2
+
+# The science CAN tag denoting our specific CAN network 
+SCIENCE_CAN_TAG = 314 
 
 class ScienceCanPacket:
     priority: int = 0
@@ -114,6 +121,33 @@ def assemble_frame_from_SCP(rsx_sci_pkt: ScienceCanPacket):
     can_frame.is_extended_id = True
 
     return can_frame
+
+# Reads from ROS topic data, fills an SCP with information to be sent 
+def process_ROS_topic(ros_topic):
+    
+    # Initialize an instance of an empty SCP 
+    rsx_scp = ScienceCanPacket()
+
+    '''
+    Current expected layout of ros_msg (subject to change): 
+    priority: 0
+    receiver: final receiving module in CAN
+    sensor: final associated sensor message is being sent to
+    extra: any extra info sent from ground station
+    data_legth: length of data, equivalent to dlc in CAN
+    data_content: actual contents of message being sent, equivalent to CAN data
+    '''
+
+    # Fill with info from ros_topic
+    rsx_scp.priority = ros_topic.priority
+    rsx_scp.science = SCIENCE_CAN_TAG
+    rsx_scp.sender = SCI_MODULE_RPI  # Sender will always be RPi, it sends every ros_msg to CAN network 
+    rsx_scp.receiver = ros_topic.receiver 
+    rsx_scp.sensor = ros_topic.sensor
+    rsx_scp.extra = ros_topic.extra
+    rsx_scp.dlc = ros_topic.data_length
+    rsx_scp.data = ros_topic.data_content
+    
     
 def process_can_rx():
     return "bruh"
