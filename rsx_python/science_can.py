@@ -48,6 +48,9 @@ class ScienceCanPacket:
 
     # Prints the raw values of everything in the Science Can Packet (SCP) 
     def print_pkt(self, immediate=True):
+        print("============================")
+        print("RSX Science CAN Packet Data!")
+        print("----------------------------")
         print (f"Priority: {self.priority}")
         print (f"RSX_Science_Tag: {self.science}")
         print (f"Sender_Module: {self.sender}")
@@ -55,7 +58,9 @@ class ScienceCanPacket:
         print (f"Sensor: {self.sensor}")
         print (f"Extra_Bits: {self.extra}")
         print (f"Data_Lenth: {self.dlc}")
+        print("----------------------------")
         print (f"Data_Content: {self.data}")
+        print("============================")
 
     # Returns receiver of the SCP 
     def fetch_receiver(self):
