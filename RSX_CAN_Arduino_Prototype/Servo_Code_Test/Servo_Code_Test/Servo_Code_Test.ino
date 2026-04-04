@@ -43,6 +43,7 @@ void loop() {
     Serial.println("RECEIVED");
   }
   delay(100);
+  // Balls :D
   if (Science::process_tx()) {
     Serial.println("SENT");
   }

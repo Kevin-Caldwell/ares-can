@@ -39,28 +39,18 @@ class ScienceCanPacket:
     dlc: int = 0 
     data = [None, None, None, None, None, None, None, None]
 
-    # Prints the raw values of everything in the Science Can Packet (SCP) 
-    def print_pkt(self, immediate=True):
-        print (f"Priority: {self.priority}")
-        print (f"RSX_Science_Tag: {self.science}")
-        print (f"Sender_Module: {self.sender}")
-        print (f"Receiver_Module: {self.receiver}")
-        print (f"Sensor: {self.sensor}")
-        print (f"Extra_Bits: {self.extra}")
-        print (f"Data_Lenth: {self.dlc}")
-        print (f"Data_Content: {self.data}")
+    def send_msg(self, immediate=True):
+        print ("ur mum fat")
+        print("ive been doing this all day is python just my life now")
+        print("I can tell people I work with snakes and chips :/")
+        print("painge")
+        print("kekw (>:())\npoggers\nPOG")
 
-    # Returns receiver of the SCP 
-    def fetch_receiver(self):
-        return self.receiver
-    
-    # Returns sender of the SCP 
-    def fetch_sender(self):
-        return self.sender
-    
-    # Returns sensor of the SCP 
-    def fetch_sensor(self):
-        return self.sensor
+    def receive_msg():
+        print ("who are you who are so wise in the ways of science")
+
+    def parse_CAN_msg(msg):
+        print("we comrade")
 
 def assemble_SCP_from_frame(can_frame: can.Message, rsx_sci_pkt: ScienceCanPacket):
     # Fill the RSX_Sci packet with information from the CAN frame address
