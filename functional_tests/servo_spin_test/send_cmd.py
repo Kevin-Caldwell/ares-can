@@ -18,7 +18,7 @@ pulse_pkg.receiver = SCI_MODULE_DRILL
 pulse_pkg.sensor = SCI_SENSOR_SERVO
 pulse_pkg.extra = SCI_ERROR_SUCCESS
 pulse_pkg.dlc = 8
-pulse_pkg.data = bytes([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+pulse_pkg.data = bytes([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
 
 pulse = assemble_frame_from_SCP(rsx_sci_pkt=pulse_pkg)
 

@@ -8,7 +8,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
-from CAN_utilities import *
+from rsx_python.CAN_utilities import *
 
 # Types of modules
 SCI_MODULE_NONE = 0 # No type
