@@ -4,21 +4,16 @@
 
 #include <mcp2515.h>
 
-// TODO: WRITE CIRCULAR BUFFER FOR TX AND RX MESSAGE
-
 namespace Science {
 
+CANBuffer rx_buffer;
+CANBuffer tx_buffer;
+
 MCP2515 mcp2515(CS_PIN);
-
-ScienceCANMessage buf;
-
-struct can_frame intermediate_can_msg;
 
 void can_setup() {
   SPI.begin();
   mcp2515.reset();
-  // mcp2515.setBitrate(CAN_500KBPS, MCP_8MHz);
-  // mcp2515.setNormalMode();
   Serial.println("MCP2515 init OK YAY! :)");
 }
 
@@ -68,7 +63,7 @@ void to_can_frame(const ScienceCANMessage* message,
   }
 }
 
-int val = 0;
+
 // HELLO
 // POTATERS ARE YUMMY
 // u right
@@ -80,47 +75,69 @@ int val = 0;
 // 4. TODO: Arduino to RPi
 // 5. Add python imports
 // 6. Add Arduino library for RSX Science CAN
-// 7.
-bool process_rx() {
 
-  bool recv = false;
-  const int MAX_RX = 10;
+int process_rx() {
+
+  int recv = false;
+  struct can_frame rx_can_frame;
+  
   for (int i = 0; i < MAX_RX; ++i) {
-    MCP2515::ERROR res = mcp2515.readMessage(&intermediate_can_msg);
+    MCP2515::ERROR res = mcp2515.readMessage(&rx_can_frame);
     if (res == MCP2515::ERROR_NOMSG || res == MCP2515::ERROR_FAIL) {
-      return recv;
+      break;
     }
 
+#if defined(PRINT_ALL_CAN)
     Serial.print("ID: ");
-    Serial.print(intermediate_can_msg.can_id, HEX);
+    Serial.print(rx_can_frame.can_id, HEX);
     Serial.print(", Data: ");
-    for (int i = 0; i < intermediate_can_msg.can_dlc; i++) {
-      Serial.print(intermediate_can_msg.data[i]);
+    for (int i = 0; i < rx_can_frame.can_dlc; i++) {
+      Serial.print(rx_can_frame.data[i]);
       Serial.print(", ");
     }
     Serial.println();
-    val = intermediate_can_msg.data[0];
+#endif
 
-    parse_can_message(intermediate_can_msg, &buf);
+    ScienceCANMessage buf;
+
+    parse_can_message(rx_can_frame, &buf);
     if (buf.receiver_ == CAN_MODULE) {
-      recv = true;
+#if defined(PRINT_FILTERED_CAN)
+      Serial.println("Received CAN message:");
+      Serial.print("Priority: ");
+      Serial.println(buf.priority_, HEX);
+      Serial.print("Sender: ");
+      Serial.println(buf.sender_, HEX);
+      Serial.print("Receiver: ");
+      Serial.println(buf.receiver_, HEX);
+      Serial.print("Sensor: ");
+      Serial.println(buf.sensor_, HEX);
+      Serial.print("Extra: ");
+      Serial.println(buf.extra_, HEX);
+      Serial.print("DLC: ");
+      Serial.println(buf.dlc_, HEX);
+      Serial.print("Data: ");
+      for (int i = 0; i < buf.dlc_; i++) {
+        Serial.print(buf.data_[i], HEX);
+        Serial.print(", ");
+      }
+      Serial.println("\n End CAN Message.");
+#endif
+      rx_buffer.push(buf);
+      recv++;
     }
   }
   return recv;
 }
 
-bool process_tx() {
-  Serial.println("SENDING");
+int process_tx() {
 
-  const struct can_frame frame = {.can_id = 0x80000000 | 0x00000500, .can_dlc = 0x8, {val, val, val, val, val, val, val}};
-  val++;
-  // frame.can_id = ;
-  // frame.can_dlc = 8;
-  // #pragma loop unroll 8
-  // for (int i = 0; i < 8; i++) {
-  //   frame.data[i] = 0xFF;
-  // }
-  mcp2515.sendMessage(&frame);
+  while (!tx_buffer.empty()) {
+    const ScienceCANMessage buf = tx_buffer.pop();
+    struct can_frame tx_frame;
+    to_can_frame(&buf, &tx_frame);
+    mcp2515.sendMessage(&tx_frame);
+  }
 }
 
 };  // namespace Science

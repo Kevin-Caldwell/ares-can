@@ -1,5 +1,5 @@
 import can
-from CAN_utilities import generate_can_id, initialize_bus, CMD_API_NONRIO_HB
+from functional_tests.sample_python_can.CAN_utilities import generate_can_id, initialize_bus, CMD_API_NONRIO_HB
 
 # Instantiate CAN bus
 BUS = initialize_bus()

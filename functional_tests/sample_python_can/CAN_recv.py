@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from CAN_utilities import *
+from functional_tests.sample_python_can.CAN_utilities import *
 # import rospy
 # from std_msgs.msg import Float32MultiArray, UInt8MultiArray
 

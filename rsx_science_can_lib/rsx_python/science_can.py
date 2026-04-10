@@ -13,7 +13,7 @@ import can
 # from rclpy.node import Node
 # from std_msgs.msg import String
 
-from rsx_python.CAN_utilities import *
+from rsx_science_can_lib.rsx_python.CAN_utilities import *
 
 # Types of modules
 SCI_MODULE_NONE = 0 # No type
@@ -176,7 +176,6 @@ def ROS_STR_to_CAN_sanity(ros_str):
     rsx_scp.data = ros_str
 
     return rsx_scp
-
 
 def process_can_rx():
     return "bruh"

@@ -8,10 +8,10 @@ template<class T, uint32_t N = 32>
 class CircularBuffer {
 public:
   CircularBuffer()
-  : head_(0x0),
-  : tail_(0x0)
   {
-    static_assert((N & (N-1)) == 0);
+    static_assert((N & (N-1)) == 0 && "N should be a power of 2");
+    head_ = 0;
+    tail_ = 0;
   }
 
   ~CircularBuffer()
@@ -25,17 +25,17 @@ public:
 
   inline T& pop()
   {
-    return buffer_[WRAP(tail++)];
+    return buffer_[WRAP(tail_++)];
   }
 
   inline T& operator[](const int index)
   {
-    return buffer_[WRAP(tail + index)];
+    return buffer_[WRAP(tail_ + index)];
   }
 
   inline T& operator[](const int index) const
   {
-    return buffer_[WRAP(tail + index)];
+    return buffer_[WRAP(tail_ + index)];
   }
 
   inline int elements() const
@@ -45,11 +45,11 @@ public:
 
   inline bool empty() const
   {
-    
+    return head_ == tail_;
   }
 
 private:
-  constexpr uint32_t kMask = N - 1;
+  const uint32_t kMask = N - 1;
   uint32_t head_;
   uint32_t tail_;
   T buffer_[N];
