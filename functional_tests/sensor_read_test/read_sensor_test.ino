@@ -1,9 +1,7 @@
 
-#include <Servo.h>
+// #include <Servo.h>
 
-#include "science_can.h"
-
-Servo rightAngleServo;
+#include "rsx-science/science_can.h"
 
 // PINOUT to Arduino Uno
 // SCK to Pin 13
@@ -29,19 +27,15 @@ void setup() {
   Serial.println("MCP2515 init OK Yayyyyy :)");
 
   // attaches the servo on pin 9 to the servo object
-  rightAngleServo.attach(3);
+  // rightAngleServo.attach(3);
 
   // Serial.println("Servo attached!");
 
 }
 
-void servo_step(int steps)
+float read_ultrasonic_sensor()
 {
-  static int vel = 0;
-  vel += 90 * steps;
-  vel %= 180;
-
-  rightAngleServo.write(vel);
+  return 0.0f;
 }
 
 void loop() {
@@ -53,8 +47,17 @@ void loop() {
 
   while (!Science::rx_buffer.empty()) {
     Science::ScienceCANMessage incoming_message = Science::rx_buffer.pop();
-    if (incoming_message.sensor_ = kSensorServo) {
-      servo_step(incoming_message.data_[0]);
+    if (incoming_message.sensor_ = kSensorUltrasonic) {
+      float dist = read_ultrasonic_sensor();
+      Science::ScienceCANMessage send_back;
+      send_back.priority_ = 0x0;
+      send_back.science_ = 0x0;
+      send_back.sender_ = kModuleDrill;
+      send_back.receiver_ = kModuleRPi;
+      send_back.sensor_ = kSensorUltrasonic;
+      send_back.dlc_ = 4;
+      *((float*) (send_back.data_)) = dist; // Copy 32b float into 8b[4]
+      Science::tx_buffer.push(send_back);
     }
   }
 
