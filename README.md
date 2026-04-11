@@ -20,8 +20,18 @@ To install and use the `RSX_Arduino` package, follow these steps:
 	- **macOS:** `/Users/{username}/Documents/Arduino`
 	- **Linux:** `/home/{username}/Arduino`
  3. To use in a sketch (`ino` file), go to "Sketch >> Include Library >> `science_can`", and it should add the appropriate header file to your sketch. If this does not happen, try restarting the Arduino IDE. 
- 4. Have fun! Use the functions you need to send your own CAN messages! 
-
+ 4. Have fun! Use the functions you need to send your own CAN messages!
+ 
 ## Python
 
-Ur mom
+The Python package contains CAN functions made for the RSX Science Raspberry Pi, containing functions that allow communications between the ground station and the rest of the science module. 
+
+To use this library, follow these steps: 
+
+ 1. Visit the `rsx_science_can_lib/rsx_python` directory in the repository.
+ 2. Copy the folder into the root directory of your workspace. 
+ 3. Run your python script as a module in order to use the functions in the library. You can do so with the command: `python3 -m functional_tests.servo_spin_test.send_cmd`. 
+ 4. Have fun! Use the functions you need to send your own CAN messages!
+
+## Ur Mom
+Your mother would be proud of all you accomplished. By using this library, you CAN do anything! 
