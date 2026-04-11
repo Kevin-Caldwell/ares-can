@@ -2,7 +2,7 @@
 #include <science_can.h>
 
 
-#include <Servo.h>        
+#include <Servo.h>
 
 Servo rightAngleServo;
 
@@ -39,10 +39,10 @@ void setup() {
 void servo_step(int steps)
 {
   static int vel = 0;
-  vel += 90 * steps;
-  vel %= 180;
+  vel += 20 * steps;
+  vel %= 360;
 
-  rightAngleServo.write(vel);
+  rightAngleServo.write(vel -180);
 }
 
 void loop() {

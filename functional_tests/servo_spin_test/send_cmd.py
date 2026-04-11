@@ -1,8 +1,8 @@
 # Enables RPi to send a series of sanity pulses
 # Able to be recieved by arduino
 
-from rsx_python.science_can import *
-from rsx_python.CAN_utilities import initialize_bus
+from rsx_science_can_lib.rsx_python.science_can import *
+from rsx_science_can_lib.rsx_python.CAN_utilities import initialize_bus
 # from CAN_utilities import generate_can_id, initialize_bus, CMD_API_NONRIO_HB
 
 # Instantiate CAN bus
@@ -25,6 +25,13 @@ pulse = assemble_frame_from_SCP(rsx_sci_pkt=pulse_pkg)
 # global BUS
 
 print("We got here")
+import time
+while (True):
+    pulse_pkg.data = bytes([(pulse_pkg.data[0] + 1) % 18, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+    pulse = assemble_frame_from_SCP(rsx_sci_pkt=pulse_pkg)
+    task = BUS.send(pulse)
+    time.sleep(1)
+
 
 task = BUS.send_periodic(pulse, 1, store_task= False)
 print("Servo spin command sent")
