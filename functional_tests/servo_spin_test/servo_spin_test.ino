@@ -1,7 +1,8 @@
+#include <circular_buffer.h>
+#include <science_can.h>
 
-#include <Servo.h>
 
-#include "rsx-arduino/science_can.h"
+#include <Servo.h>        
 
 Servo rightAngleServo;
 
