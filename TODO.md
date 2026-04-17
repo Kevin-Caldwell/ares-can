@@ -13,7 +13,7 @@
 
 # Library Setup TODO
 - [x] Say Library three times
-- [ ] High Level Structure of CAN library
-- [ ] Package Arduino code into importable package
-- [ ] Package Python code into importable package
+- [x] High Level Structure of CAN library
+- [x] Package Arduino code into importable package
+- [x] Package Python code into importable package
 - [ ] Rave in our victory 
