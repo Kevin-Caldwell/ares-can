@@ -12,18 +12,19 @@ enum module_t {
     kModuleCount
 };
 
-enum sensors_t {
-    kSensorNone = 0,
-    kSensorAll = 1,
-    kSensorUVLED = 2,
-    kSensorServo = 3,
-    kSensorLinearActuator = 4,
-    kSensorUltrasonic = 5,
-    kSensorElectromagnet = 6,
-    kSensorSPARKMotor = 7,
-    kSensorsCount
+enum peripherals_t {
+    kPeripheralNone = 0,
+    kPeripheralAll = 1,
+    kPeripheralUVLED = 2,
+    kPeripheralServo = 3,
+    kPeripheralLinearActuator = 4,
+    kPeripheralUltrasonic = 5,
+    kPeripheralElectromagnet = 6,
+    kPeripheralSPARKMotor = 7,
+    kPeripheralMultiSpectral = 8,
+    kPeripheralCount
 };
-// Sender Module, Receive Module, Sensor Module
+// Sender Module, Receive Module, Peripheral Module
 // 1 4 5
 // ADDR: 0001 1000 1001
 enum error_t {

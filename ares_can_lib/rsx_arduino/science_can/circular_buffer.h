@@ -1,6 +1,7 @@
 #pragma once
 
 #include <inttypes.h>
+#include <assert.h>
 
 #define WRAP(val) ((val) & (kMask))
 
@@ -18,9 +19,10 @@ public:
   {
   }
 
-  inline void push(const T& val)
+  inline int push(const T& val)
   {
     buffer_[WRAP(head_++)] = val;
+    return tail_ - head_ + 1 < N;
   }
 
   inline T& pop()
@@ -54,4 +56,3 @@ private:
   uint32_t tail_;
   T buffer_[N];
 };
-

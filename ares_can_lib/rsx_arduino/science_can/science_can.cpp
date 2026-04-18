@@ -2,8 +2,6 @@
 
 #include "devices/can_config.h"
 
-#include <mcp2515.h>
-
 namespace Science {
 
 CANBuffer rx_buffer;
@@ -22,7 +20,7 @@ void parse_can_message(const can_frame& frame,
   uint32_t can_id = frame.can_id;
   message->extra_ = can_id & 0xFFF;
   can_id >>= 12;
-  message->sensor_ = can_id & 0xF;
+  message->peripheral_ = can_id & 0xF;
   can_id >>= 4;
   message->receiver_ = can_id & 0xF;
   can_id >>= 4;
@@ -50,7 +48,7 @@ void to_can_frame(const ScienceCANMessage* message,
   can_id <<= 4;
   can_id |= message->receiver_ & 0xF;
   can_id <<= 4;
-  can_id |= message->sensor_ & 0xF;
+  can_id |= message->peripheral_ & 0xF;
   can_id <<= 12;
   can_id |= message->extra_ & 0xFFF;
 
@@ -64,17 +62,7 @@ void to_can_frame(const ScienceCANMessage* message,
 }
 
 
-// HELLO
 // POTATERS ARE YUMMY
-// u right
-
-// List
-// 1. Me
-// 2. You
-// 3. RPi to Arduino works
-// 4. TODO: Arduino to RPi
-// 5. Add python imports
-// 6. Add Arduino library for RSX Science CAN
 
 int process_rx() {
 
@@ -110,8 +98,8 @@ int process_rx() {
       Serial.println(buf.sender_, HEX);
       Serial.print("Receiver: ");
       Serial.println(buf.receiver_, HEX);
-      Serial.print("Sensor: ");
-      Serial.println(buf.sensor_, HEX);
+      Serial.print("Peripheral: ");
+      Serial.println(buf.peripheral_, HEX);
       Serial.print("Extra: ");
       Serial.println(buf.extra_, HEX);
       Serial.print("DLC: ");

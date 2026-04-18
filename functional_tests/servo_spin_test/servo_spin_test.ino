@@ -54,7 +54,7 @@ void loop() {
 
   while (!Science::rx_buffer.empty()) {
     Science::ScienceCANMessage incoming_message = Science::rx_buffer.pop();
-    if (incoming_message.sensor_ = kSensorServo) {
+    if (incoming_message.peripheral_ = kPeripheralServo) {
       servo_step(incoming_message.data_[0]);
     }
   }

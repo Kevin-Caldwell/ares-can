@@ -11,5 +11,23 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("DOING NOTHING");
+  // Serial.println("DOING NOTHING");
+  if (const int recv_cnt = Science::process_rx()) {
+    Serial.print("Received ");
+    Serial.print(recv_cnt);
+    Serial.println(" Messages.");
+  }
+
+  while (!Science::rx_buffer.empty()) {
+    Science::ScienceCANMessage incoming_message = Science::rx_buffer.pop();
+    if (incoming_message.peripheral_ = kPeripheralServo) {
+      servo_step(incoming_message.data_[0]);
+    }
+  }
+
+  if (const int send_cnt = Science::process_tx()) {
+    Serial.print("Sent ");
+    Serial.print(send_cnt);
+    Serial.println(" Messages.");
+  }
 }

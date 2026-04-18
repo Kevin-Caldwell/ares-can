@@ -10,7 +10,7 @@ BUS = initialize_bus()
 # Set our current device to be the RPi
 CURRENT_CAN_MODULE = SCI_MODULE_RPI
 
-# Constant looping 
+# Constant looping
 while True:
 
   # Try to receive a can message from the BUS
@@ -19,16 +19,16 @@ while True:
 
   # If a CAN message is received, we want to read it
   if can_msg != None:
-    # Extract the CAN message and fill out an SCP 
+    # Extract the CAN message and fill out an SCP
     scp = assemble_SCP_from_frame(can_msg)
 
-    # Check if the message was meant for this device 
+    # Check if the message was meant for this device
     if scp.receiver == CURRENT_CAN_MODULE:
 
       a = scp.data[0]
       # scp.dlc = 8
 
-      # Print the received message 
+      # Print the received message
       print("CAN MESSAGE RECEIVED:")
       print("----------------------")
       print(f"Sender: {scp.sender}")
@@ -39,12 +39,12 @@ while True:
       # Increment to update the data
       for i in range(8):
         scp.data[i] = a+1
-    
-      # Change the address to be sending from the RPi 
+
+      # Change the address to be sending from the RPi
       scp.sender = CURRENT_CAN_MODULE
       scp.receiver = SCI_MODULE_DRILL
 
-      # Print the received message 
+      # Print the received message
       print("SENDING THE FOLLOWING CAN MESSAGE:")
       print("----------------------")
       print(f"Sender: {scp.sender}")
@@ -52,16 +52,16 @@ while True:
       print(f"SENDING: {hex(scp.data[0])}, {hex(scp.data[1])}, {hex(scp.data[2])}, {hex(scp.data[3])}, {hex(scp.data[4])}, {hex(scp.data[5])}, {hex(scp.data[6])}, {hex(scp.data[7])}")
       print("----------------------")
 
-      # Prepare CAN message to be sent out 
+      # Prepare CAN message to be sent out
       pulse_pkg = assemble_frame_from_SCP(scp)
       BUS.send(pulse_pkg)
       print("there's stuff in here")
       print(can_msg)
-    
+
     else:
       continue
 
-  # If the can message is empty, keep waiting 
+  # If the can message is empty, keep waiting
   else:
     print("NUTTIN YET CHIEF BEEF!!")
 
@@ -72,7 +72,7 @@ print(f"CAN Priority: {hex(pulse_pkg.priority)}")
 print(f"CAN Science: {pulse_pkg.science}")
 print(f"CAN Sender: {pulse_pkg.sender}")
 print(f"CAN Receiver: {pulse_pkg.receiver}")
-print(f"CAN Sensor: {pulse_pkg.sensor}")
+print(f"CAN Peripheral: {pulse_pkg.peripheral}")
 print(f"CAN Extra: {pulse_pkg.extra}")
 print(f"CAN DLC: {pulse_pkg.dlc}")
 print("CAN Data: ", end='')

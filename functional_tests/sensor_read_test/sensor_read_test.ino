@@ -47,14 +47,14 @@ void loop() {
 
   while (!Science::rx_buffer.empty()) {
     Science::ScienceCANMessage incoming_message = Science::rx_buffer.pop();
-    if (incoming_message.sensor_ = kSensorUltrasonic) {
+    if (incoming_message.peripheral_ = kPeripheralUltrasonic) {
       float dist = read_ultrasonic_sensor();
       Science::ScienceCANMessage send_back;
       send_back.priority_ = 0x0;
       send_back.science_ = 0x0;
       send_back.sender_ = kModuleDrill;
       send_back.receiver_ = kModuleRPi;
-      send_back.sensor_ = kSensorUltrasonic;
+      send_back.peripheral_ = kPeripheralUltrasonic;
       send_back.dlc_ = 4;
       *((float*) (send_back.data_)) = dist; // Copy 32b float into 8b[4]
       Science::tx_buffer.push(send_back);

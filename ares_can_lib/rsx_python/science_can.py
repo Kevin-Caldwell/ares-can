@@ -1,11 +1,11 @@
 # MAIN PYTHON FILE FOR RSX SCIENCE
 
-# Contains all the main science sensors and modules for CAN communication
+# Contains all the main science peripherals and modules for CAN communication
 # 2026/26 edition
 
 # MAIN PYTHON FILE FOR RSX SCIENCE
 
-# Contains all the main science sensors and modules for CAN communication
+# Contains all the main science peripherals and modules for CAN communication
 # 2026/26 edition
 
 import can
@@ -23,15 +23,15 @@ SCI_MODULE_OPTICS = 3 # Arduino Nano
 SCI_MODULE_DRILL = 4 # Arduino Nano
 SCI_MODULE_MOTOR = 5 # Arduino Nano
 
-# Types of sensors
-SCI_SENSOR_NONE = 0
-SCI_SENSOR_ALL = 1
-SCI_SENSOR_UVLED = 2
-SCI_SENSOR_SERVO = 3
-SCI_SENSOR_LINEAR_ACTUATOR = 4
-SCI_SENSOR_ULTRASONIC = 5
-SCI_SENSOR_ELECTROMAGNET = 6
-SCI_SENSOR_SPARK_MOTOR = 7
+# Types of Peripherals
+SCI_PERIPHERAL_NONE = 0
+SCI_PERIPHERAL_ALL = 1
+SCI_PERIPHERAL_UVLED = 2
+SCI_PERIPHERAL_SERVO = 3
+SCI_PERIPHERAL_LINEAR_ACTUATOR = 4
+SCI_PERIPHERAL_ULTRASONIC = 5
+SCI_PERIPHERAL_ELECTROMAGNET = 6
+SCI_PERIPHERAL_SPARK_MOTOR = 7
 
 # Types of errors
 SCI_ERROR_SUCCESS = 0 # No Error
@@ -40,12 +40,12 @@ SCI_ERROR_PP = 2
 
 class ScienceCanPacket:
     priority: int = 0
-    # multipacket_id: Identifies whether CAN msg is part of a larger multi-packet piece of data, 
-    # or if its a standalone. 0 if normal CAN msg, ID of the big data packet if otherwise 
-    multipacket_id: int = 0 
+    # multipacket_id: Identifies whether CAN msg is part of a larger multi-packet piece of data,
+    # or if its a standalone. 0 if normal CAN msg, ID of the big data packet if otherwise
+    multipacket_id: int = 0
     sender: int = 0
     receiver: int = 0
-    sensor: int = 0
+    peripheral: int = 0
     extra: int = 0
     dlc: int = 0
     data = [None, None, None, None, None, None, None, None]
@@ -59,7 +59,7 @@ class ScienceCanPacket:
         print (f"Is_Part_of_Multipacket: {bool(self.multipacket_id)}")
         print (f"Sender_Module: {self.sender}")
         print (f"Receiver_Module: {self.receiver}")
-        print (f"Sensor: {self.sensor}")
+        print (f"Peripheral: {self.peripheral}")
         print (f"Extra_Bits: {self.extra}")
         print (f"Data_Lenth: {self.dlc}")
         print("----------------------------")
@@ -74,10 +74,10 @@ class ScienceCanPacket:
     def fetch_sender(self):
         return self.sender
 
-    # Returns sensor of the SCP
-    def fetch_sensor(self):
-        return self.sensor
-    
+    # Returns peripheral of the SCP
+    def fetch_peripheral(self):
+        return self.peripheral
+
     def fetch_multipacket_id(self):
         return self.multipacket_id
 
@@ -86,7 +86,7 @@ def assemble_SCP_from_frame(can_frame: can.Message, rsx_sci_pkt: ScienceCanPacke
     can_id  = can_frame.arbitration_id
     rsx_sci_pkt.extra  = can_id & 0xFFF
     can_id = can_id >> 12
-    rsx_sci_pkt.sensor     = can_id & 0xF
+    rsx_sci_pkt.peripheral     = can_id & 0xF
     can_id = can_id >> 4
     rsx_sci_pkt.receiver     = can_id & 0xF
     can_id = can_id >> 4
@@ -120,7 +120,7 @@ def assemble_frame_from_SCP(rsx_sci_pkt: ScienceCanPacket):
     can_id = can_id << 4
     can_id |= rsx_sci_pkt.receiver & 0xF
     can_id = can_id << 4
-    can_id |= rsx_sci_pkt.sensor & 0xF
+    can_id |= rsx_sci_pkt.peripheral & 0xF
     can_id = can_id << 12
     can_id |= rsx_sci_pkt.extra & 0xFFF
 
@@ -144,7 +144,7 @@ def process_ROS_topic(ros_topic):
     Current expected layout of ros_msg (subject to change):
     priority: 0
     receiver: final receiving module in CAN
-    sensor: final associated sensor message is being sent to
+    peripheral: final associated peripheral message is being sent to
     extra: any extra info sent from ground station
     data_legth: length of data, equivalent to dlc in CAN
     data_content: actual contents of message being sent, equivalent to CAN data
@@ -155,7 +155,7 @@ def process_ROS_topic(ros_topic):
     rsx_scp.multipacket_id = 12345 #TODO: ASSIGN APPROPRIATE ID TO MULTIPACKET DATA
     rsx_scp.sender = SCI_MODULE_RPI  # Sender will always be RPi, it sends every ros_msg to CAN network
     rsx_scp.receiver = ros_topic.receiver
-    rsx_scp.sensor = ros_topic.sensor
+    rsx_scp.peripheral = ros_topic.peripheral
     rsx_scp.extra = ros_topic.extra
     rsx_scp.dlc = ros_topic.data_length
     rsx_scp.data = ros_topic.data_content
@@ -172,7 +172,7 @@ def ROS_STR_to_CAN_sanity(ros_str):
     rsx_scp.multipacket_id = 0 # Single packet by default
     rsx_scp.sender = SCI_MODULE_RPI  # Sender will always be RPi, it sends every ros_msg to CAN network
     rsx_scp.receiver = SCI_MODULE_DRILL
-    rsx_scp.sensor = SCI_SENSOR_SERVO
+    rsx_scp.peripheral = SCI_PERIPHERAL_SERVO
     rsx_scp.extra = 0b000100010001
     rsx_scp.dlc = len(ros_str)
     rsx_scp.data = ros_str

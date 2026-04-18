@@ -27,7 +27,7 @@ struct ScienceCANMessage {
     uint8_t multipacket_id_;
     uint8_t sender_;
     uint8_t receiver_;
-    uint8_t sensor_;
+    uint8_t peripheral_;
 
     // Extra information for normal CAN msg, Frame ID for Extended CAN packet.
     uint16_t extra_;
