@@ -28,7 +28,7 @@ void parse_can_message(const can_frame& frame,
   can_id >>= 4;
   message->sender_ = can_id & 0xF;
   can_id >>= 4;
-  message->science_ = can_id & 0xF;
+  message->multipacket_id_ = can_id & 0xF;
   can_id >>= 4;
   message->priority_ = can_id & 0x1;
   message->dlc_ = frame.can_dlc;
@@ -44,7 +44,7 @@ void to_can_frame(const ScienceCANMessage* message,
   uint32_t can_id = 0b1000;
   can_id |= message->priority_ & 0x1;
   can_id <<= 4;
-  can_id |= message->science_ & 0xF;
+  can_id |= message->multipacket_id_ & 0xF;
   can_id <<= 4;
   can_id |= message->sender_ & 0xF;
   can_id <<= 4;
@@ -80,7 +80,7 @@ int process_rx() {
 
   int recv = false;
   struct can_frame rx_can_frame;
-  
+
   for (int i = 0; i < MAX_RX; ++i) {
     MCP2515::ERROR res = mcp2515.readMessage(&rx_can_frame);
     if (res == MCP2515::ERROR_NOMSG || res == MCP2515::ERROR_FAIL) {

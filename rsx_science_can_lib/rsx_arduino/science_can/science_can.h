@@ -9,7 +9,7 @@
 #include "circular_buffer.h"
 
 #define PRINT_ALL_CAN // Switch to print all CAN Messages
-#define PRINT_FILTERED_CAN 
+#define PRINT_FILTERED_CAN
 
 namespace Science {
 
@@ -22,10 +22,14 @@ void can_setup();
 
 struct ScienceCANMessage {
     uint8_t priority_;
-    uint8_t science_;
+
+    // 4'b0000 if normal CAN msg, image id otherwise
+    uint8_t multipacket_id_;
     uint8_t sender_;
     uint8_t receiver_;
     uint8_t sensor_;
+
+    // Extra information for normal CAN msg, Frame ID for Extended CAN packet.
     uint16_t extra_;
     uint8_t dlc_;
     uint8_t data_[8];
