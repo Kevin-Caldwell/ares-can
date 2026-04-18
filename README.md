@@ -8,7 +8,7 @@ The Controller Area Network (CAN) is a standardized communication protocol that 
 
 ## Arduino
 
-The custom CAN functions made for RSX Science's Arduino based modules can be accessed in the `rsx_science_can_lib/rsx_arduino` directory. It is recommended to import this as a library when working on CAN communication software for ease of access to functions.
+The custom CAN functions made for RSX Science's Arduino based modules can be accessed in the `ares_can_lib/rsx_arduino` directory. It is recommended to import this as a library when working on CAN communication software for ease of access to functions.
 
 This library contains a variety of useful functions and a custom class designed to read and send messages easily between RSX Science modules. This library should be used in conjunction with the `RSX_Python` package that comes with this library in order to communicate with the Raspberry Pi.
 
