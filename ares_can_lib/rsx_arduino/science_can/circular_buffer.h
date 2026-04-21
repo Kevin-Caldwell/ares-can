@@ -30,6 +30,11 @@ public:
     return buffer_[WRAP(tail_++)];
   }
 
+  inline T& last()
+  {
+    return buffer_[WRAP(tail_)];
+  }
+
   inline T& operator[](const int index)
   {
     return buffer_[WRAP(tail_ + index)];

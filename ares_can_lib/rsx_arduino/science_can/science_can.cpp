@@ -2,7 +2,131 @@
 
 #include "devices/can_config.h"
 
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+
 namespace Science {
+namespace MPM {
+
+constexpr int kMaxMultiPacket = 15;
+constexpr int kFrameIndexBits = 12;
+constexpr int kMaxLength = (1 << (kFrameIndexBits + 1));
+constexpr int kOneShotLength = 8; // 8 Bytes
+
+struct ResourceState {
+  // Data
+  uint8_t* base_;
+  uint8_t* pos_;
+  int32_t len_;
+
+  // CAN
+  module_t other_; // Sender / Receiver
+  peripherals_t peripheral_;
+
+  // Table
+  bool available_;
+  uint8_t mapped_index_;
+};
+
+struct ResourceTable {
+public:
+  ResourceTable()
+  {
+    begin_ = &arr_[0];
+    end_ = &arr_[kMaxMultiPacket];
+  }
+
+  ResourceState* alloc(const uint8_t* base,
+    const uint8_t len,
+    const int frame_index)
+  {
+    assert(len < kMaxLength &&
+      "Trying to allocate longer than Max Length");
+    assert(frame_index < kMaxMultiPacket &&
+      "More frames than possible to allocate");
+
+    ResourceState* resource = begin_;
+    while (resource->available_ == 0 && resource != end_) {
+      resource++;
+    }
+    assert(resource != end_ && "Table full");
+    return resource;
+  }
+
+  int free(const int frame_index)
+  {
+    assert(frame_index < kMaxMultiPacket &&
+      "Trying to access out of bounds frame");
+
+    ResourceState* resource = begin_;
+    while(resource->mapped_index_ != frame_index && resource != end_) {
+      resource++;
+    }
+    assert(resource != end_ && "Frame not found");
+
+    resource->base_ = nullptr;
+    resource->len_ = 0;
+    resource->pos_ = nullptr;
+    resource->other_ = kModuleNone;
+    resource->peripheral_ = kPeripheralNone;
+    resource->available_ = 1;
+    resource->mapped_index_ = -1;
+    return 0;
+  }
+
+  ResourceState* get(const int frame_index)
+  {
+    assert(frame_index < kMaxMultiPacket &&
+      "Trying to access out of bounds frame");
+
+    ResourceState* resource = begin_;
+    while (resource->mapped_index_ != frame_index && resource != end_) {
+      resource++;
+    }
+    assert(resource != end_ && "Frame not found");
+    return resource;
+  }
+
+  // Called by Sender
+  ScienceCANMessage getNextCAN(const int frame_index)
+  {
+    ResourceState* resource = get(frame_index);
+    ScienceCANMessage message;
+
+    const int sent_progress = resource->pos_ - resource->base_;
+    const int remaining = resource->len_ - sent_progress;
+    message.priority_ = 1;
+    message.multipacket_id_ = frame_index;
+    message.sender_ = CAN_MODULE;
+    message.receiver_ = resource->other_;
+    message.peripheral_ = resource->peripheral_;
+    message.dlc_ = MIN(remaining, kOneShotLength);
+    if (remaining) {
+      message.extra_ = sent_progress / 8;
+      for (int i = 0; i < message.dlc_; ++i) {
+        message.data_[i] = resource->pos_++;
+      }
+    } else {
+      message.extra_ = -1; // Send END signal
+    }
+
+    return message;
+  }
+
+  void setNextCAN(const int frame_index,
+    const int )
+
+private:
+  ResourceState arr_[kMaxMultiPacket];
+  const ResourceState* begin_;
+  const ResourceState* end_;
+
+};
+
+static ResourceTable send_table;
+static ResourceTable recv_table;
+
+}
 
 CANBuffer rx_buffer;
 CANBuffer tx_buffer;
@@ -111,7 +235,11 @@ int process_rx() {
       }
       Serial.println("\n End CAN Message.");
 #endif
-      rx_buffer.push(buf);
+      if (~buf.multipacket_id_) {
+        rx_buffer.push(buf);
+      } else {
+        MPM::send_table.alloc()
+      }
       recv++;
     }
   }
@@ -120,12 +248,21 @@ int process_rx() {
 
 int process_tx() {
 
+  int cnt = 0;
+
+
+
   while (!tx_buffer.empty()) {
-    const ScienceCANMessage buf = tx_buffer.pop();
+    const ScienceCANMessage buf = tx_buffer.last();
     struct can_frame tx_frame;
     to_can_frame(&buf, &tx_frame);
-    mcp2515.sendMessage(&tx_frame);
+    if (~mcp2515.sendMessage(&tx_frame)) {
+      tx_buffer.pop();
+      cnt++;
+    }
   }
+
+  return cnt;
 }
 
 };  // namespace Science
