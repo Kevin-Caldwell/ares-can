@@ -4,8 +4,8 @@
 
 #include <Servo.h>
 
-Servo chem_servo;
-constexpr int CHEM_SERVO_PIN = 3;
+Servo sorter_servo;
+constexpr int SORTER_SERVO_PIN = 3;
 
 // PINOUT to Arduino Uno
 // SCK to Pin 13
@@ -13,7 +13,7 @@ constexpr int CHEM_SERVO_PIN = 3;
 // SO to Pin 12
 // CS to 10
 
-module_t CAN_MODULE = kModuleChem;
+module_t CAN_MODULE = kModuleSorter;
 
 void setup() {
 
@@ -33,19 +33,19 @@ void setup() {
   Serial.println("MCP2515 init OK Yayyyyy :)");
 
   // attaches the servo on pin 9 to the servo object
-  chem_servo.attach(CHEM_SERVO_PIN);
+  sorter_servo.attach(SORTER_SERVO_PIN);
 
   // Serial.println("Servo attached!");
 
 }
 
-void servo_step(int steps)
+void servo_step(int steps, int angle)
 {
   static int vel = 0;
-  vel += 20 * steps;
-  vel %= 360;
+  vel += angle * steps;
+  vel %= 180;
 
-  chem_servo.write(vel -180);
+  sorter_servo.write(vel);
 }
 
 void loop() {
@@ -58,7 +58,7 @@ void loop() {
   while (!Science::rx_buffer.empty()) {
     Science::ScienceCANMessage incoming_message = Science::rx_buffer.pop();
     if (incoming_message.peripheral_ = kPeripheralServo) {
-      servo_step(incoming_message.data_[0]);
+      servo_step(incoming_message.data_[0], 90);
     }
   }
 

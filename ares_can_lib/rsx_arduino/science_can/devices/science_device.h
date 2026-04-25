@@ -10,7 +10,7 @@ enum module_t : uint8_t {
     kModuleDrill = 4,
     kModuleMotor = 5,
     kModuleMultispectral = 6,
-    kModuleChem = 7,
+    kModuleSorter = 7,
     kModuleCount
 };
 
