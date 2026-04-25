@@ -23,7 +23,7 @@ SCI_MODULE_OPTICS = 3 # Arduino Nano
 SCI_MODULE_DRILL = 4 # Arduino Nano
 SCI_MODULE_MOTOR = 5 # Arduino Nano
 SCI_MODULE_MULTISPECTRAL = 6 # Arduino Nano
-SCI_MODULE_CHEM = 7 # Arduino Nano
+SCI_MODULE_SORTER = 7 # Arduino Nano
 
 # Types of Peripherals
 SCI_PERIPHERAL_NONE = 0
