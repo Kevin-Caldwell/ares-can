@@ -197,9 +197,9 @@ def process_rx(can_bus):
 
 def process_tx(can_bus):
     for msg in TX_BUFFER:
-        assemble_frame_from_SCP(msg)
+        frame_msg = assemble_frame_from_SCP(msg)
         try:
-            can_bus.send(msg=msg, timeout=0.1)
+            can_bus.send(msg=frame_msg, timeout=0.1)
         except TimeoutError:
             print("ERROR: MESSAGE DID NOT SEND PROPERLY")
         TX_BUFFER.remove(msg)
