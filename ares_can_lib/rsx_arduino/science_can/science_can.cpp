@@ -275,7 +275,10 @@ int process_tx() {
     if (MPM::sample_extraction_buffer.available) {
       MPM::queue_send = false;
 #if defined(STRIPPED_MPM)
-  MPM::send_table.available_ =
+      MPM::send_table.base_ = MPM::sample_extraction_buffer.base_;
+      MPM::send_table.pos_ = MPM::sample_extraction_buffer.base_;
+      MPM::send_table.len_ = MPM::sample_extraction_buffer.len_;
+      MPM::send_table.mapped_index_ = MPM::frame;
 #else
       MPM::send_table.alloc(MPM::sample_extraction_buffer.base_,
         MPM::sample_extraction_buffer.len_,
