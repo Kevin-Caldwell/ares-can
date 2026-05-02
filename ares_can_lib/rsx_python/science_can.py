@@ -74,7 +74,7 @@ class ScienceCanPacket:
         print (f"Extra_Bits: {self.extra}")
         print (f"Data_Lenth: {self.dlc}")
         print("----------------------------")
-        print (f"Data_Content: {np.uint16(self.data)}")
+        print (f"Data_Content: {self.data}")
         print("============================")
 
         # Prints the values of data in the Science Can Packet (SCP) as uint16 
