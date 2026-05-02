@@ -59,7 +59,7 @@ class ScienceCanPacket:
     peripheral: int = 0
     extra: int = 0
     dlc: int = 0
-    data = []
+    data = [None, None, None, None, None, None, None, None]
 
     # Prints the raw values of everything in the Science Can Packet (SCP)
     def print_pkt(self, immediate=True):
@@ -79,6 +79,9 @@ class ScienceCanPacket:
 
         # Prints the values of data in the Science Can Packet (SCP) as uint16 
     def print_processed_pkt(self, immediate=True):
+        for data in self.data:
+            if data == None:
+                self.data.pop(data)
         print("======================================")
         print("Processed RSX Science CAN Packet Data!")
         print("--------------------------------------")
@@ -164,7 +167,7 @@ def assemble_SCP_from_frame(can_frame: can.Message):
 
     # Fill the RSX_Sci packet with data received
     for i in range (can_frame.dlc):
-        rsx_sci_pkt.data.append(can_frame.data[i])
+        rsx_sci_pkt.data[i] = can_frame.data[i]
 
     return rsx_sci_pkt
 
