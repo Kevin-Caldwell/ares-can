@@ -79,7 +79,7 @@ class ScienceCanPacket:
 
         # Prints the values of data in the Science Can Packet (SCP) as uint16 
     def print_processed_pkt(self, immediate=True):
-        filtered_data = remove_items(self.data)
+        filtered_data = remove_items(self.data, None)
         print("======================================")
         print("Processed RSX Science CAN Packet Data!")
         print("--------------------------------------")
