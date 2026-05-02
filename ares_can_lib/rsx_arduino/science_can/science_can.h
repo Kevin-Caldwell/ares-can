@@ -8,8 +8,9 @@
 #include "devices/science_device.h"
 #include "circular_buffer.h"
 
-#define PRINT_ALL_CAN // Switch to print all CAN Messages
-#define PRINT_FILTERED_CAN
+// #define PRINT_ALL_CAN // Switch to print all CAN Messages
+// #define PRINT_FILTERED_CAN
+#define STRIPPED_MPM
 
 namespace Science {
 
