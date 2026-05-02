@@ -8,18 +8,19 @@ from ares_can_lib.rsx_python.CAN_utilities import initialize_bus
 BUS = initialize_bus()
 
 # Example ScienceCanPacket to dissect
-pulse_pkg = ScienceCanPacket()
+multipacket_request = ScienceCanPacket()
 
-pulse_pkg.priority = 0
-pulse_pkg.multipacket_id = 0
-pulse_pkg.sender = SCI_MODULE_RPI
-pulse_pkg.receiver = SCI_MODULE_DRILL
-pulse_pkg.peripheral = SCI_PERIPHERAL_SERVO
-pulse_pkg.extra = SCI_ERROR_SUCCESS
-pulse_pkg.dlc = 8
-pulse_pkg.data = bytes([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+multipacket_request.priority = 0
+multipacket_request.multipacket_id = assign_available_slot()
+multipacket_request.sender = SCI_MODULE_RPI
+multipacket_request.receiver = SCI_MODULE_MULTISPECTRAL
+multipacket_request.peripheral = SCI_PERIPHERAL_NONE
+multipacket_request.extra = SCI_ERROR_SUCCESS
+multipacket_request.dlc = 8
+multipacket_request.data = bytes([0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
 
-pulse = assemble_frame_from_SCP(rsx_sci_pkt=pulse_pkg)
+TX_BUFFER.append(multipacket_request)
+process_tx(BUS)
 
 import time
 while (True):
@@ -30,7 +31,7 @@ while (True):
     toss SCP into process rx 
     
     '''
-    pulse_pkg.data = bytes([(pulse_pkg.data[0] + 1) % 18, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
-    pulse = assemble_frame_from_SCP(rsx_sci_pkt=pulse_pkg)
-    task = BUS.send(pulse)
+    # pulse_pkg.data = bytes([(pulse_pkg.data[0] + 1) % 18, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+    # pulse = assemble_frame_from_SCP(rsx_sci_pkt=pulse_pkg)
+    # task = BUS.send(pulse)
     time.sleep(1)
