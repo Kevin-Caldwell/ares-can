@@ -1,14 +1,14 @@
 
 // #include <Servo.h>
 
-#include "rsx-science/science_can.h"
+#include "science_can.h"
 
 // PINOUT to Arduino Uno
 // SCK to Pin 13
 // SI to Pin 11
 // SO to Pin 12
 // CS to 10
-
+module_t CAN_MODULE = kModuleDrill;
 void setup() {
   Serial.begin(115200);
 
@@ -29,13 +29,13 @@ void setup() {
   // attaches the servo on pin 9 to the servo object
   // rightAngleServo.attach(3);
 
-  // Serial.println("Servo attached!");
+  Serial.println("Servo attached!");
 
 }
 
 float read_ultrasonic_sensor()
 {
-  return 0.0f;
+  return random();
 }
 
 void loop() {
@@ -45,19 +45,23 @@ void loop() {
     Serial.println(" Messages.");
   }
 
+  delay(1000);
+
+  float dist = read_ultrasonic_sensor();
+  Science::ScienceCANMessage send_back;
+  send_back.priority_ = 0x0;
+  send_back.multipacket_id_ = 0x0;
+  send_back.sender_ = kModuleDrill;
+  send_back.receiver_ = kModuleRPi;
+  send_back.peripheral_ = kPeripheralUltrasonic;
+  send_back.dlc_ = 4;
+  *((float*) (send_back.data_)) = dist; // Copy 32b float into 8b[4]
+  Science::tx_buffer.push(send_back);
+
   while (!Science::rx_buffer.empty()) {
     Science::ScienceCANMessage incoming_message = Science::rx_buffer.pop();
     if (incoming_message.peripheral_ = kPeripheralUltrasonic) {
-      float dist = read_ultrasonic_sensor();
-      Science::ScienceCANMessage send_back;
-      send_back.priority_ = 0x0;
-      send_back.science_ = 0x0;
-      send_back.sender_ = kModuleDrill;
-      send_back.receiver_ = kModuleRPi;
-      send_back.peripheral_ = kPeripheralUltrasonic;
-      send_back.dlc_ = 4;
-      *((float*) (send_back.data_)) = dist; // Copy 32b float into 8b[4]
-      Science::tx_buffer.push(send_back);
+
     }
   }
 

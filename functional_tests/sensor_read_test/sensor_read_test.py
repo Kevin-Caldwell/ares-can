@@ -7,7 +7,7 @@ from ares_can_lib.rsx_python.CAN_utilities import initialize_bus
 # Instantiate CAN bus
 BUS = initialize_bus()
 
-# Example ScienceCanPacket to store 
+# Example ScienceCanPacket to store
 msg_received = ScienceCanPacket()
 
 import time
@@ -16,6 +16,7 @@ while (True):
     if RX_BUFFER == []:
         continue
     else:
+        print(RX_BUFFER)
         for msg in RX_BUFFER:
             msg_received = msg
             if type(msg_received) == list:
@@ -24,4 +25,4 @@ while (True):
                 print(f"Length of RX_BUFFER: {len(RX_BUFFER)}")
                 msg_received.print_pkt()
 
-        RX_BUFFER = []
+        RX_BUFFER.clear()
