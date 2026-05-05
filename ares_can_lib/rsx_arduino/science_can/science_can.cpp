@@ -27,15 +27,9 @@ struct ResourceState {
   peripherals_t peripheral_;
 
   // Table
-#if defined(STRIPPED_CAN)
   bool available_;
-#endif
   uint8_t mapped_index_;
 };
-
-#if defined(STRIPPED_MPM)
-static ResourceState send_table;
-#else
 
 bool run_mpm = false;
 int recv;
@@ -72,17 +66,11 @@ public:
 
   int free(const int frame_index)
   {
-    // assert(frame_index < kMaxMultiPacket &&
-      // "Trying to access out of bounds frame");
-
-    ResourceState* resource = begin_;
     int cnt = 0;
-    while(begin_[cnt].mapped_index_ != frame_index && resource != end_) {
-      resource++;
+    while(begin_[cnt].mapped_index_ != frame_index && cnt < kMaxStoredPacket) {
       cnt++;
     }
-    resource = &begin_[cnt];
-    // assert(resource != end_ && "Frame not found");
+    ResourceState* resource = &begin_[cnt];
 
     resource->base_ = nullptr;
     resource->len_ = 0;
@@ -98,12 +86,8 @@ public:
   {
 
     int counter = 0;
-    ResourceState* resource = begin_;
     while (arr_[counter].mapped_index_ != frame_index &&
-      counter < kMaxStoredPacket &&
-      counter < 32) {
-
-      resource++;
+      counter < kMaxStoredPacket) {
       counter++;
     }
     // assert(resource != end_ && "Frame not found");
@@ -138,10 +122,28 @@ public:
       run_mpm = false;
     }
 
-    Serial.print(" Sent Progress: ");
+#if defined(DEBUG_MPM)
     Serial.print(sent_progress);
-    Serial.print(" REMAINING: ");
-    Serial.print(remaining);
+    Serial.print("/");
+    Serial.print(resource->len_);
+    Serial.print(":\t");
+    Serial.print("MID:");
+    Serial.print(message.multipacket_id_);
+    Serial.print("S: ");
+    Serial.print(message.sender_);
+    Serial.print("R: ");
+    Serial.print(message.receiver_);
+    Serial.print("P: ");
+    Serial.print(message.peripheral_);
+    Serial.print("DLC: ");
+    Serial.print(message.dlc_);
+    Serial.print("Data: ");
+    for (int i = 0; i < message.dlc_; ++i) {
+      Serial.print(message.data_[i]);
+      Serial.print(",");
+    }
+    Serial.println();
+#endif
 
     return message;
   }
@@ -172,8 +174,6 @@ private:
 };
 
 static ResourceTable send_table;
-
-#endif
 
 bool queue_send = false;
 int frame = -1;
@@ -208,9 +208,7 @@ void parse_can_message(const can_frame& frame,
   message->priority_ = can_id & 0x1;
   message->dlc_ = frame.can_dlc;
 
-#if !defined(STRIPPED_CAN)
 #pragma loop unroll 8
-#endif
   for (int i = 0; i < 8; ++i) {
     message->data_[i] = frame.data[i];
   }
@@ -234,9 +232,7 @@ void to_can_frame(const ScienceCANMessage* message,
   frame->can_id = can_id;
   frame->can_dlc = message->dlc_;
 
-#if !defined(STRIPPED_CAN)
 #pragma loop unroll 8
-#endif
   for (int i = 0; i < 8; ++i) {
     frame->data[i] = message->data_[i];
   }
@@ -297,7 +293,9 @@ int process_rx() {
       if (buf.multipacket_id_ == 0) {
         rx_buffer.push(buf);
       } else {
+#if defined(DEBUG_MPM)
         Serial.println("MCP Request received.");
+#endif
         MPM::queue_send = true;
         MPM::frame = buf.multipacket_id_;
         MPM::recv = buf.sender_;
@@ -311,14 +309,19 @@ int process_rx() {
 int process_tx() {
   if (MPM::queue_send) {
     if (MPM::sample_extraction_buffer.available) {
+#if defined(DEBUG_MPM)
+      Serial.println("Resource available with request.");
+#endif
       MPM::queue_send = false;
       MPM::send_table.alloc(MPM::sample_extraction_buffer.base_,
         MPM::sample_extraction_buffer.len_,
         MPM::frame);
       MPM::run_mpm = true;
       MPM::sample_extraction_buffer.available = false;
-    }
+#if defined(DEBUG_MPM)
+      Serial.println("Allocated tracker for MCP library.");
 #endif
+    }
   }
   if (MPM::run_mpm) {
     while (!tx_buffer.full()) {
@@ -326,15 +329,6 @@ int process_tx() {
         MPM::send_table.getNextCAN(MPM::frame);
       if (c.extra_ == 65535) {
         break;
-      }
-      Serial.print(" Extra: ");
-      Serial.print(c.extra_, HEX);
-      Serial.print(" DLC: ");
-      Serial.print(c.dlc_, HEX);
-      Serial.print(" Data: ");
-      for (int i = 0; i < c.dlc_; i++) {
-        Serial.print(c.data_[i], HEX);
-        Serial.print(", ");
       }
       tx_buffer.push(c);
     }
