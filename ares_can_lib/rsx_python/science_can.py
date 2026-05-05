@@ -121,8 +121,8 @@ MULTIPACKET_BUFFER = [] # Appends to RX_BUFFER once ENTIRE large dataset has bee
 for i in range (MAX_MULTIPACKETS):
     MULTIPACKET_BUFFER.append([])
     for j in range (SPEC_PACKET_SIZE):
-        placeholder_scp = ScienceCanPacket()
-        MULTIPACKET_BUFFER[i].append(placeholder_scp)
+        # placeholder_scp = ScienceCanPacket()
+        MULTIPACKET_BUFFER[i].append(ScienceCanPacket())
 
 def assign_available_slot():
     # Find next available multipacket slot
