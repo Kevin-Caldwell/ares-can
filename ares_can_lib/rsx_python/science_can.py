@@ -45,6 +45,8 @@ SCI_ERROR_PP = 2
 # Available slots for large multi-packet datasets
 AVAILABLE_MULT_PKT_SLOTS = list(range(1, 16))
 ACTIVE_MULT_PKT_SLOTS = []
+MAX_MULTIPACKETS = 17
+NUM_CAN_IN_MULTIPACKET = 72
 
 # Spectrometer Packet Size 
 SPEC_PACKET_SIZE = 144
@@ -116,6 +118,11 @@ class ScienceCanPacket:
 RX_BUFFER = []
 TX_BUFFER = []
 MULTIPACKET_BUFFER = [] # Appends to RX_BUFFER once ENTIRE large dataset has been received
+
+for i in range (MAX_MULTIPACKETS):
+    for j in range (NUM_CAN_IN_MULTIPACKET):
+        placeholder_scp = ScienceCanPacket()
+        MULTIPACKET_BUFFER[i][j] = placeholder_scp
 
 def assign_available_slot():
     # Find next available multipacket slot
