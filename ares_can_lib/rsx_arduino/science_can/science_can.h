@@ -53,6 +53,8 @@ int process_rx();
 
 int process_tx();
 
+int process_can();
+
 namespace MPM {
 struct BufferInfo
 {

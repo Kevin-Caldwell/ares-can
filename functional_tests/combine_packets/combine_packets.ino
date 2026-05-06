@@ -65,11 +65,9 @@ void setup() {
 }
 
 void loop() {
-  if (const int cnt = Science::process_rx()){
+  if (const int cnt = Science::process_can()) {
     Serial.print("Received ");
     Serial.print(cnt);
     Serial.println(" Messages");
   }
-
-  Science::process_tx();
 }

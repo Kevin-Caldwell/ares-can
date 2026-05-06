@@ -55,7 +55,9 @@ public:
     resource->pos_ = base;
     resource->len_ = len;
     resource->other_ = MPM::recv;
+#if defined(DEBUG_MPM)
     Serial.println("ALLOCED");
+#endif
     return resource;
   }
 
@@ -92,7 +94,6 @@ public:
   ScienceCANMessage getNextCAN(const int frame_index)
   {
     ResourceState* resource = get(frame_index);
-    Serial.println(reinterpret_cast<int>(resource));
     ScienceCANMessage message;
 
     const int sent_progress = reinterpret_cast<int>(resource->pos_) - reinterpret_cast<int>(resource->base_);
@@ -232,6 +233,11 @@ void to_can_frame(const ScienceCANMessage* message,
   }
 }
 
+int process_can() {
+  process_tx();
+  return process_rx();
+}
+
 // POTATERS ARE YUMMY
 
 int process_rx() {
@@ -244,7 +250,9 @@ int process_rx() {
     if (res == MCP2515::ERROR_NOMSG || res == MCP2515::ERROR_FAIL) {
       break;
     }
-    Serial.println("PROCESS RX");
+#if defined(DEBUG_MPM)
+  Serial.println("PROCESS RX");
+#endif
 
 #if defined(PRINT_ALL_CAN)
     Serial.print("ID: ");
@@ -319,7 +327,7 @@ int process_tx() {
   }
   if (MPM::run_mpm) {
     while (!tx_buffer.full()) {
-      ScienceCANMessage c =
+      const ScienceCANMessage c =
         MPM::send_table.getNextCAN(MPM::frame);
       if (c.extra_ == 65535) {
         break;
@@ -329,7 +337,6 @@ int process_tx() {
   }
 
   int cnt = 0;
-
   while (!tx_buffer.empty()) {
     const ScienceCANMessage buf = tx_buffer.last();
     struct can_frame tx_frame;
@@ -337,6 +344,8 @@ int process_tx() {
     if (~mcp2515.sendMessage(&tx_frame)) {
       tx_buffer.pop();
       cnt++;
+    } else {
+      break; // Full, try again once later
     }
   }
 
