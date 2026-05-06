@@ -8,7 +8,7 @@
 - [x] Move a servo
 - [x] Move servo with imported packages
 - [x] Read a sensor value
-- [ ] Move data spread over 3 CAN Packets
+- [x] Move data spread over 3 CAN Packets
 - [ ] Bitbang 10 bit ADC signal from Mulispectral camera
 
 # Library Setup TODO
@@ -19,4 +19,6 @@
 - [ ] Rave in our victory
 
 # Fine Grained TODOs
-- [ ] Ultrasonic Sensor should report values periodically
+- [x] Ultrasonic Sensor should report values periodically
+
+
