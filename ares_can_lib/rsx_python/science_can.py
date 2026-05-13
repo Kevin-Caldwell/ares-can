@@ -38,8 +38,8 @@ SCI_PERIPHERAL_ULTRASONIC = 6
 SCI_PERIPHERAL_ELECTROMAGNET = 7
 SCI_PERIPHERAL_SPARK_MOTOR = 8
 
-# Types of errors
-SCI_ERROR_SUCCESS = 0 # No Error
+# Types of errors 
+SCI_NO_ERROR = 0 # No Error
 SCI_ERROR_GENERIC = 1 # General Error Msg
 SCI_ERROR_PP = 2
 
@@ -189,7 +189,13 @@ def combine_multipacket_data(scp_list):
     for scp in scp_list:
         combined_data.append(scp.data)
 
-    return combined_data
+    res = []
+
+    for inner_arr in combined_data:
+        for num in inner_arr:
+            res.append(num)
+
+    return res
 
 def assemble_SCP_from_frame(can_frame: can.Message):
     rsx_sci_pkt = ScienceCanPacket()
@@ -285,13 +291,13 @@ def process_ROS_topic(ros_topic):
     '''
 
     # Fill with info from ros_topic
-    # rsx_scp.priority = ros_topic.priority
+    rsx_scp.priority = ros_topic.priority
 
     if ros_topic.receiver == SCI_MODULE_MULTISPECTRAL:
         rsx_scp.multipacket_id = assign_available_slot() # Assign next available multipacket ID to request
     else:
         rsx_scp.multipacket_id = 0
-
+        
     rsx_scp.sender = SCI_MODULE_RPI  # Sender will always be RPi, it sends every ros_msg to CAN network
     rsx_scp.receiver = ros_topic.receiver
     rsx_scp.peripheral = ros_topic.peripheral
