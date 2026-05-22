@@ -307,17 +307,7 @@ int process_rx() {
       print_can_message(buf);
       Serial.println("End CAN Message.");
 #endif
-      if (buf.multipacket_id_ == 0) {
-        rx_buffer.push(buf);
-      } 
-      if (buf.peripheral == kPeripheralMultispectral) {
-#if defined(DEBUG_MPM)
-        Serial.println("MCP Request received :)");
-#endif
-        MPM::queue_send = true;
-        MPM::frame = buf.multipacket_id_;
-        MPM::recv = buf.sender_;
-      }
+      rx_buffer.push(buf);
       recv++;
     }
   }
