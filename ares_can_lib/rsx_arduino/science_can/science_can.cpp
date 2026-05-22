@@ -150,7 +150,7 @@ public:
       message.extra_ = -1; // Send END signal
       free(frame_index);
       Serial.println("Making Sample Extraction Buffer Available");
-      // Science::MPM::sample_extraction_buffer.available = true;
+      Science::MPM::sample_extraction_buffer.available = true;
       run_mpm = false;
       Serial.println(run_mpm);
     }
@@ -326,6 +326,7 @@ int process_rx() {
 int process_tx() {
   if (MPM::queue_send) {
     if (MPM::sample_extraction_buffer.available) {
+      Science::MPM::sample_extraction_buffer.available = false;
 #if defined(DEBUG_MPM)
       Serial.println("Resource available with request.");
 #endif
