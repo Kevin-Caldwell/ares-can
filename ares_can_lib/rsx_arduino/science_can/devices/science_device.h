@@ -24,6 +24,7 @@ enum peripherals_t : uint8_t {
     kPeripheralUltrasonic = 6,
     kPeripheralElectromagnet = 7,
     kPeripheralSPARKMotor = 8,
+    kPeripheralSpectrometer = 9,
     kPeripheralCount
 };
 // Sender Module, Receive Module, Peripheral Module
