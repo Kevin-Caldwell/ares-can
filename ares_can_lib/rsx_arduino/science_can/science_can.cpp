@@ -309,7 +309,8 @@ int process_rx() {
 #endif
       if (buf.multipacket_id_ == 0) {
         rx_buffer.push(buf);
-      } else {
+      } 
+      if (buf.peripheral == kPeripheralMultispectral) {
 #if defined(DEBUG_MPM)
         Serial.println("MCP Request received :)");
 #endif
