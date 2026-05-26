@@ -37,6 +37,8 @@ while (True):
             if type(msg_received) == list:
                 print("Found Spectrometer Data Packet")
                 combined_data = combine_multipacket_data(msg_received)
+                # COMBINED DATA CONTAINS SPECTROMETER DATA IN ARRAY OF 288 PIXELS
+                # Plot here directly 
                 print(f"All Multipacket Data: {combined_data}")
                 end = 1
             else:
