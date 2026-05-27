@@ -166,7 +166,6 @@ def multi_packet_manager(scp_msg):
 
 
     if cpy.extra == END_PACKET_CODE:
-        print_mpkt(MULTIPACKET_BUFFER[mid])
         RX_BUFFER.append(MULTIPACKET_BUFFER[mid])
         MULTIPACKET_BUFFER.remove(MULTIPACKET_BUFFER[mid])
         free_available_slot(mid)
@@ -183,7 +182,6 @@ def multi_packet_manager(scp_msg):
     #     MULTIPACKET_BUFFER[mid][index].data[i] = cpy.data[i]
 
     MULTIPACKET_BUFFER[mid][index] = cpy
-    print_mpkt(MULTIPACKET_BUFFER[mid])
 
 # Takes in a list of scp packets part of the same multipacket message and combines them
 def combine_multipacket_data(scp_list):
