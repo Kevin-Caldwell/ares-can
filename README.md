@@ -14,13 +14,14 @@ This library contains a variety of useful functions and a custom class designed 
 
 To install and use the `RSX_Arduino` package, follow these steps:
 
- 1. Visit the `ares_can_lib/rsx_arduino` directory in the repository.
- 2. Copy the folder inside named `science_can` into the "Libraries" folder created by your Arduino IDE. Usually, the address for this would be:
-	- **Windows:** `C:\Users\{username}\Documents\Arduino`
-	- **macOS:** `/Users/{username}/Documents/Arduino`
-	- **Linux:** `/home/{username}/Arduino`
- 3. To use in a sketch (`ino` file), go to "Sketch >> Include Library >> `science_can`", and it should add the appropriate header file to your sketch. If this does not happen, try restarting the Arduino IDE.
- 4. Have fun! Use the functions you need to send your own CAN messages!
+1. Visit the `ares_can_lib/rsx_arduino` directory in the repository.
+2. Copy the folder inside named `science_can` into the "Libraries" folder created by your Arduino IDE. Usually, the address for this would be:  
+    
+    * **Windows:** `C:\Users\{username}\Documents\Arduino`
+    * **macOS:** `/Users/{username}/Documents/Arduino`
+    * **Linux:** `/home/{username}/Arduino`
+3. To use in a sketch (`ino` file), go to "Sketch >> Include Library >> `science_can`", and it should add the appropriate header file to your sketch. If this does not happen, try restarting the Arduino IDE.
+4. Have fun! Use the functions you need to send your own CAN messages!
 
 ### Python
 
@@ -28,15 +29,14 @@ The Python package contains CAN functions made for the RSX Science Raspberry Pi,
 
 To use this library, follow these steps:
 
- 1. Visit the `ares_can_lib/rsx_python` directory in the repository.
- 2. Copy the folder into the root directory of your workspace.
- 3. Run your python script as a module in order to use the functions in the library. You can run a sample test with the command: `python3 -m functional_tests.servo_spin_test.servo_spin_test`.
- 4. Have fun! Use the functions you need to send your own CAN messages!
+1. Visit the `ares_can_lib/rsx_python` directory in the repository.
+2. Copy the folder into the root directory of your workspace.
+3. Run your python script as a module in order to use the functions in the library. You can run a sample test with the command: `python3 -m functional_tests.servo_spin_test.servo_spin_test`.
+4. Have fun! Use the functions you need to send your own CAN messages!
 
-## Usage
-
-The Ares library uses a ScienceCANPacket as an intermediate layer
-with fields representing the different parts of
+**Usage**  
+Functions in the library can be called and used on the appropriate devices as you see fit. For more information of using this library, please read the rest of our documentation in the `docs` folder.
 
 ### Ur Mom
+
 Your mother would be proud of all you accomplished. By using this library, you CAN do anything!
